@@ -1,0 +1,7 @@
+{"db-host" : "localhost",
+    "db-port" : "3306",
+    "db-name" : "test",
+	"classname": "com.mysql.jdbc.Driver", 
+    "subprotocol" : "mysql",
+    "user" : "root",
+    "password" : "deathmetal"}
