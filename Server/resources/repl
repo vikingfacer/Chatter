@@ -1,0 +1,65 @@
+pp [request]
+{:status 200
+ :headers {"Content-Type" "text/hmtl"}
+ :body "<h1> Hello World </h1>"})
+(require 'clojure.pprint)
+(def handler [request]
+{:status 200
+ :headers {"content-type" "text/html"}
+ :body "<h1>Hello World</h1>"})
+(defn handler [request]
+{:status 200
+ :headers {"content-type" "text/html"}
+ :body "<h1>Hello World</h1>"})
+(defn app [request] 
+  (println "-------------------------------")
+  (println "Incoming boggie:::")
+  (clojure.pprint/pprint request)
+  (let [response (handle request)]
+   (println "outgoing Response Map:")
+   (clojure.pprint/pprint response)
+  (println "-------------------------------")
+  (response))
+)
+(defn app [request] 
+  (println "-------------------------------")
+  (println "Incoming boggie:::")
+   (clojure.pprint/pprint request)
+  (let [response (handler request)]
+   (println "outgoing Response Map:")
+   (clojure.pprint/pprint response)
+  (println "-------------------------------")
+  response))
+(defn wrap-spy [handler]
+  (fn [request]
+    (println "-------------------------------")
+    (println "Incoming Request:")
+    (clojure.pprint/pprint request)
+    (let [response (handler request)]
+      (println "Outgoing Response Map:")
+      (clojure.pprint/pprint response)
+      (println "-------------------------------")
+      response)))
+(def app 
+   (->  handler 
+      (wraper-spy)))
+      (wrap-spy)))
+(def app 
+   (->  handler 
+      (wrap-spy)))
+(def app 
+   (->  #'handler 
+      (wrap-spy)))
+(defn handler [request]
+  {:status 200
+   :headers {"Content-Type" "text/html"}
+   :body "<h1>Hello World!!!!!!!!!!!!!!!1</h1>" })
+(require 'ring.middleware.stacktrace)
+(def app
+  (-> #'handler
+      (ring.middleware.stacktrace/wrap-stacktrace)
+      (wrap-spy)))
+(defn handler [request]
+  {:status 200
+   :headers {"Content-Type" "text/html"}
+   :body (str "<h1>Hello World!!!!!!!!!!!!!!!1</h1>" (/ 1 0))})
