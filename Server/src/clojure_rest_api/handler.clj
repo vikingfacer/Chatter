@@ -1,14 +1,30 @@
 (ns clojure-rest-api.handler
   (:require [compojure.core :refer :all]
+            [compojure.handler :as handler]
             [compojure.route :as route]
-            [ring.middleware.defaults :refer [wrap-defaults site-defaults]])
- 			[dbmanager :as dbman])
+            [ring.middleware.json :as middleware]
+            [ring.util.response :refer [response]]
 
-(defroutes app-routes
-  (GET "/User/:User" [User] (dbman/get-user :UserName User))
-  (GET "/conversations" [] "ayo boiiii")
-  
-    (route/not-found "Not Found"))
+            [clojure-rest-api.dbmanager :as dbman]))
+
+
+(defroutes app-routes 
+  (GET "/" [] "HELOO BABY BOY")
+  (route/not-found "Not Found try again"))
+
+(defn wrap-spy [handler]
+  (fn [request]
+    (println "-------------------------------")
+    (println "Incoming Request:")
+    (clojure.pprint/pprint request)
+    (let [response (handler request)]
+      (println "Outgoing Response Map:")
+      (clojure.pprint/pprint response)
+      (println "-------------------------------")
+      response)))
 
 (def app
-  (wrap-defaults app-routes site-defaults))
+     (->(handler/api app-routes )
+        (middleware/wrap-json-body)
+        (middleware/wrap-json-response) 
+        (wrap-spy) ))
