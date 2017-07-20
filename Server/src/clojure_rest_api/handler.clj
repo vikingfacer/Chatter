@@ -9,6 +9,12 @@
 
 
 (defroutes app-routes 
+  (context "/User" [] (defroutes User-routes
+    (GET "/" [] (response (dbman/get-user)))
+    (GET "/:id" [:id] (response dbman/get-user :User id) )
+    (POST "/" [] (response {:eat "poop"}) )
+                       
+                       ))
   (GET "/" [] "HELOO BABY BOY")
   (route/not-found "Not Found try again"))
 
