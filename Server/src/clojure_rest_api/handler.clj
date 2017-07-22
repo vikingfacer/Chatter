@@ -9,11 +9,22 @@
 
 (defroutes app-routes 
   (context "/User" [] (defroutes User-routes
-    (GET "/" [] (response (dbman/get-user)))
-    (GET "/:UserName" [UserName] (response (dbman/get-user :User UserName) ))
-    (POST "/" {body :body}  (dbman/insert-user body ))
-    (PUT  "/" {body :body header :header-params} (response  {:body body :headers header}) ))) ;(dbman/update-user ((:User body ) (hash-map (:Update body)) )))
-                       
+    (GET "/" [] 
+         (response (dbman/get-user)))
+    (GET "/:UserName" [UserName] 
+         (response (dbman/get-user :User UserName) ))
+
+    ; this must check for the existance before insertion
+    (POST "/" {body :body} 
+          (dbman/insert-user body )
+          (dbman/get-user :UserName (get body "UserName")))
+    (PUT  "/" {body :body header :headers}
+         (let [user (get header "user")] 
+            (dbman/update-user user body)
+            (response  (dbman/get-user :UserName user))))
+    (DELETE "/" {header :headers}
+            (dbman/delete-user (get header "username"))
+            (dbman/get-user ))))
                        
   (GET "/" [] "HELOO BABY BOY")
   (route/not-found "Not Found try again"))
