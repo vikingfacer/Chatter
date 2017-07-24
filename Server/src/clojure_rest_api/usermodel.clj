@@ -72,7 +72,7 @@
   (if (not (exists-user (:update-map)))
    (do
     (jdbc/update! db :USERS update-map ["UserName = ?" UserName]))
-   false)
+   false))
 
 ; delete user
 (defn delete-user
