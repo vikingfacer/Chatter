@@ -1,8 +1,11 @@
 (ns clojure-rest-api.usermodel	  
-  (:require [clojure-rest-api.db-utilities :refer [Create-dbfrom-json]]
+  (:require [clojure-rest-api.db-utilities :refer :all :exclude [-main]]
     		[clojure.java.jdbc :as jdbc]
             [clojure.data.json :as json]
-            [clj-time.local :as l]))
+            [clj-time.local :as l]
+            [clj-time.format :as ctf]
+            [clj-time.jdbc]
+            [clj-time.coerce :as c]))
 
 
 (def db (Create-dbfrom-json "resources/configuration.json"))
@@ -18,10 +21,10 @@
    [:UserName "varchar(40)" :unique]
    [:PassWord "varchar(40)"]
    [:Auth 	  "varchar(255)"]
-   [:LastUpdate "varchar(40)"]
+   [:LastUpdate :bigint]
    [:AuthBool :bool ]])))
 ; deletion of user table
-(defn drop-user-tabel 
+(defn drop-user-table 
   "Delete the user table"
   []
   (jdbc/db-do-commands db
@@ -29,13 +32,6 @@
 
 
 ; USERS CRUD
-; creation of user
-(defn insert-user
-  "inserts a user into the user table"
-  [User-map]
-  (jdbc/insert! db
-        :USERS
-        (conj User-map {:AuthBool false})))
 
 ; read users
 (defn get-user
@@ -47,14 +43,36 @@
 
   ))
 
+(defn exists-user 
+  [UserName]
+  (if(not( empty? (get-user :UserName UserName)))
+    true
+    false))
+
+; creation of user
+(defn insert-user
+  "inserts a user into the user table"
+  [User-map]
+  (if (not(exists-user (:UserName User-map)))
+  (do
+  	(let [insert-this { :UserName (:UserName User-map)
+                      	:PassWord (passhash 3 (:PassWord User-map) (rand-int 100000000))
+                       	:Auth (hash-this! (:UserName User-map))
+                        :LastUpdate (rand-int 1000000000)
+                        :AuthBool true
+                      }]
+  
+  (jdbc/insert! db :USERS insert-this)))
+  (do false)))
+
 ; update of user
 (defn update-user
   "update user where something equals something"
   [UserName update-map]
-  (jdbc/update! db
-        :USERS
-        update-map
-        ["UserName = ?" UserName]))
+  (if (not (exists-user (:update-map)))
+   (do
+    (jdbc/update! db :USERS update-map ["UserName = ?" UserName]))
+   false)
 
 ; delete user
 (defn delete-user
@@ -65,7 +83,14 @@
         ["UserName = ?" UserName]))
 
 (defn -main [ ]
-  (println "this is Usermodel"))
+
+  (delete-user "mee")
+  (if  (insert-user {:UserName "mee" :PassWord "nopassword" })
+    (do (println "inserted"))
+    (do (println "not inserted")) )
+  (println (exists-user "mee"))
+  
+  )
 
 
 

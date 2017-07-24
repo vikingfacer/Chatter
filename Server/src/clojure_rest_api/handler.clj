@@ -5,7 +5,7 @@
             [ring.middleware.json :as middleware]
             [ring.util.response :refer [response]]
             
-            [clojure-rest-api.Usermodel :as db-user]))
+            [clojure-rest-api.usermodel :as db-user]))
 
 
 (defroutes app-routes 

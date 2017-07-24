@@ -5,14 +5,17 @@
                 [clojure-rest-api.usermodel :as Usermodel]
                 [clojure-rest-api.convosmodel :as convosmodel]))
 
-
-
-
 (defn create-database
   "this inits all the tables for a database"
   []
   (Usermodel/init-user-table)
   (convosmodel/init-convos-table))
+
+(defn -burn
+  "this destroys everything"
+  []
+  (Usermodel/drop-user-table)
+  (convosmodel/drop-convos-table))
 
 (defn insert-alot-of-messages
 	"inserts a lot of the same message"

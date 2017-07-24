@@ -14,7 +14,8 @@
   :ring {:handler clojure-rest-api.handler/app
          :auto-reload? true
          :auto-refresh? false}
-  :profiles
-  {:dev {:dependencies [[javax.servlet/servlet-api "2.5"]
-                        [ring/ring-mock "0.3.0"]]}}
-    :main clojure-rest-api.dbmanager/-main)
+  ; :profiles
+  ; {:dev {:dependencies [[javax.servlet/servlet-api "2.5"]
+  ;                       [ring/ring-mock "0.3.0"]]}}
+    :main clojure-rest-api.usermodel/-main
+    :burn clojure-rest-api.dbmanager/-burn)
