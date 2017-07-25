@@ -4,4 +4,5 @@
 	"classname": "com.mysql.jdbc.Driver", 
     "subprotocol" : "mysql",
     "user" : "root",
-    "password" : "deathmetal"}
+    "password" : "deathmetal",
+	"useSSL" : "false"}
