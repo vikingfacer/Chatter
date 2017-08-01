@@ -55,14 +55,15 @@
   [User-map]
   (if (not(exists-user (:UserName User-map)))
   (do
+    (let [current-time (System/currentTimeMillis)]
   	(let [insert-this { :UserName (:UserName User-map)
-                      	:PassWord (passhash 3 (:PassWord User-map) (rand-int 100000000))
-                       	:Auth (hash-this! (:UserName User-map))
-                        :LastUpdate (rand-int 1000000000)
+                      	:PassWord (passhash 3 (:PassWord User-map) current-time)
+                       	:Auth (passhash 3 (:UserName User-map) current-time)
+                        :LastUpdate current-time
                         :AuthBool true
                       }]
   
-  (jdbc/insert! db :USERS insert-this)))
+  (jdbc/insert! db :USERS insert-this))))
   (do false)))
 
 ; update of user
