@@ -1,0 +1,46 @@
+(Uniqu-hash-this! 'deathcoolpoopweiners')
+(Uniqu-hash-this! "deathcoolpoopweiners")
+(Unique-hash-this! "deathcoolpoopweiners")
+(use 'ring.adapter.jetty)
+exit
+(def user {:UserName "me" :Password "coolstuff"}) 
+(user (conj {:AuthBool false :LastUpdate (rand-int 1000000)})
+)
+user
+(user (conj {:AuthBool false :LastUpdate (rand-int 1000000)}))
+user
+(conj {:AuthBool false :LastUpdate (rand-int 1000000)}))
+(conj {:AuthBool false :LastUpdate (rand-int 1000000)})
+(conj user {:AuthBool false :LastUpdate (rand-int 1000000)})
+(hash (:UserName user) )
+(def Auth (*(hash (:UserName user) ) (hash (:Password user))))
+Auth
+(def Auth (hash Auth))
+Auth
+(def Auth (hash Auth))
+Auth
+exit
+(def n 3)
+n
+(if 
+(> n 3))
+(if 
+(> n 3)
+"this is true)
+)
+(
+(if (> 3 0) (do (println "true")) (do (println "false")))
+(loop [n 3, h "hello", k "kkk"] 
+(if (zero? n) 
+h
+(recur (dec n) (* (hash h) (hash k)))))
+(loop [n 3, h "hello", k "kkk"] 
+(if (zero? n) 
+h
+(recur (dec n) (* (hash h) (hash k)) k)))
+(def h "hello")
+(def k "kkk")
+(def h (* (hash h) (hash k)))
+h
+(def h (* (hash h) (hash k)))
+h

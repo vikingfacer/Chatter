@@ -83,14 +83,37 @@
         :USERS
         ["UserName = ?" UserName]))
 
+(defn get-all-users-names
+  "for getting all users names"
+  []
+  (map :username (apply vector (get-user))))
+
+(defn get-from-sequ
+  "this is a simple wrapper to extract an item from the results of the user query"
+  [Key Results]
+  (first (map #(% Key) Results)))
+
+(defn check-user-pass 
+  "helper function for checking passwords"
+  [dbUserMap UserMap]
+  (= (get-from-sequ :password dbUserMap) 
+     (str (passhash 3 (:PassWord UserMap) (get-from-sequ :lastupdate dbUserMap)))))
+
 (defn -main [ ]
 
-  (delete-user "mee")
-  (if  (insert-user {:UserName "mee" :PassWord "nopassword" })
-    (do (println "inserted"))
-    (do (println "not inserted")) )
-  (println (exists-user "mee"))
+  ; (delete-user "mee")
+  ; (if  (insert-user {:UserName "mee" :PassWord "nopassword" })
+  ;   (do (println "\ninserted\n"))
+  ;   (do (println "\nnot inserted\n")) )
+  (let [testUser {:UserName "mee" :PassWord "nopassword" }
+    	dbuser (get-user :UserName "mee")]
+    (println  (check-user-pass dbuser testUser))
+    )
+   
   
+  ; (println (exists-user "mee"))
+  ; (println (get-all-users-names))
+ 
   )
 
 

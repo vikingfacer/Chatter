@@ -11,10 +11,11 @@
 (defroutes app-routes 
   (context "/User" [] (defroutes User-routes
     (GET "/" [] 
-         (response (db-user/get-user)))
-    (GET "/:UserName" [UserName] 
-         (response (db-user/get-user :User UserName) ))
-
+         (response (db-user/get-all-users-names))) ;this is solid
+    (GET "/UserName" [UserName]
+        
+         (response UserName))
+; (db-user/get-user :UserName UserName)
     ; this must check for the existance before insertion
     (POST "/" {body :body} 
           (db-user/insert-user body )
@@ -42,7 +43,7 @@
       response)))
 
 (def app
-     (->(handler/api app-routes )
+     (->(handler/api  app-routes)
         (middleware/wrap-json-body)
         (middleware/wrap-json-response) 
-        (wrap-spy) ))
+        (wrap-spy)))
