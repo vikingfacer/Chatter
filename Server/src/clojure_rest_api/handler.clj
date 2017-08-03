@@ -11,7 +11,7 @@
 (defroutes app-routes 
   (context "/User" [] (defroutes User-routes
     (GET "/" [] 
-         (response (db-user/get-all-users-names))) ;this is solid
+         (response (db-user/get-all-users-names))) ;this is
     (GET "/UserName" [UserName]
         
          (response UserName))

@@ -99,6 +99,17 @@
   (= (get-from-sequ :password dbUserMap) 
      (str (passhash 3 (:PassWord UserMap) (get-from-sequ :lastupdate dbUserMap)))))
 
+(defn get-user-auth
+  "checks for existance password and returns auth"
+  [UserMap]
+  (let [dbuser (get-user :UserName (:UserName UserMap))]
+  (if (not(empty? dbuser))
+        (if (check-user-pass dbuser UserMap)
+          (get-from-sequ :auth dbuser)
+           {:status 202})
+           {:status 404})))
+
+
 (defn -main [ ]
 
   ; (delete-user "mee")
@@ -107,8 +118,8 @@
   ;   (do (println "\nnot inserted\n")) )
   (let [testUser {:UserName "mee" :PassWord "nopassword" }
     	dbuser (get-user :UserName "mee")]
-    (println  (check-user-pass dbuser testUser))
-    )
+    ; (println  (check-user-pass dbuser testUser))
+    (println (get-user-auth testUser)))
    
   
   ; (println (exists-user "mee"))
