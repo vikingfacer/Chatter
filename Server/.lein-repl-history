@@ -44,3 +44,16 @@ h
 h
 (def h (* (hash h) (hash k)))
 h
+ls
+exit
+(require usermodel :as usm)
+(require clojure-rest-api.usermodel :as usm)
+(require [clojure-rest-api.usermodel :as usm])
+(:require clojure-rest-api.usermodel :as usm)
+(use usermodel)
+(use clojure-rest-api.usermodel)
+(load clojure-rest-api.usermodel)
+(load-file "clojure_rest_api/usermodel")
+(load-file "clojure_rest_api/usermodel.clj")
+(info)
+exit

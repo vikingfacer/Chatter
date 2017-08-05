@@ -83,15 +83,19 @@
         :USERS
         ["UserName = ?" UserName]))
 
+(defn get-from-sequ
+  "this is a simple wrapper to extract an item from the results of the user query"
+  [Key Results]
+  (first (map #(% Key) Results)))
+
 (defn get-all-users-names
   "for getting all users names"
   []
   (map :username (apply vector (get-user))))
 
-(defn get-from-sequ
-  "this is a simple wrapper to extract an item from the results of the user query"
-  [Key Results]
-  (first (map #(% Key) Results)))
+(defn get-specific-user
+  [UserName]
+  (get-from-sequ :username (get-user :UserName UserName)))
 
 (defn check-user-pass 
   "helper function for checking passwords"
@@ -120,7 +124,7 @@
     	dbuser (get-user :UserName "mee")]
     ; (println  (check-user-pass dbuser testUser))
     (println (get-user-auth testUser)))
-   
+   	(println (get-specific-user "mee"))
   
   ; (println (exists-user "mee"))
   ; (println (get-all-users-names))
