@@ -13,9 +13,14 @@
   :plugins [[lein-ring "0.9.7"]]
   :ring {:handler clojure-rest-api.handler/app
          :auto-reload? true
-         :auto-refresh? false}
-  ; :profiles
-  ; {:dev {:dependencies [[javax.servlet/servlet-api "2.5"]
-  ;                       [ring/ring-mock "0.3.0"]]}}
-    :main clojure-rest-api.usermodel/-main
-    :burn clojure-rest-api.dbmanager/-burn)
+         :auto-refresh? false
+         :nrepl {:start? true
+                 :port 9998}}
+  :profiles
+  {:dev {:dependencies [[javax.servlet/servlet-api "2.5"]
+                        [ring/ring-mock "0.3.0"]]}}
+    ; :main clojure-rest-api.usermodel/-main
+  :aliases {"init" ["run" "-m" "clojure-rest-api.dbmanager/create-database"]
+            "burn" ["run" "-m" "clojure-rest-api.dbmanager/-burn"] }
+    
+    )

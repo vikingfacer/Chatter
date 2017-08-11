@@ -18,7 +18,7 @@
   (jdbc/create-table-ddl
    :USERS
    [[:id :integer :primary :key :AUTO_INCREMENT]
-   [:UserName "varchar(40)" :unique]
+   [:UserName "varchar(40)" :unique "NOT NULL"]
    [:PassWord "varchar(40)"]
    [:Auth 	  "varchar(255)"]
    [:LastUpdate :bigint]
@@ -55,14 +55,15 @@
   [User-map]
   (if (not(exists-user (:UserName User-map)))
   (do
+    (let [current-time (System/currentTimeMillis)]
   	(let [insert-this { :UserName (:UserName User-map)
-                      	:PassWord (passhash 3 (:PassWord User-map) (rand-int 100000000))
-                       	:Auth (hash-this! (:UserName User-map))
-                        :LastUpdate (rand-int 1000000000)
+                      	:PassWord (passhash 3 (:PassWord User-map) current-time)
+                       	:Auth (passhash 3 (:UserName User-map) current-time)
+                        :LastUpdate current-time
                         :AuthBool true
                       }]
   
-  (jdbc/insert! db :USERS insert-this)))
+  (jdbc/insert! db :USERS insert-this))))
   (do false)))
 
 ; update of user
@@ -82,14 +83,52 @@
         :USERS
         ["UserName = ?" UserName]))
 
+(defn get-from-sequ
+  "this is a simple wrapper to extract an item from the results of the user query"
+  [Key Results]
+  (first (map #(% Key) Results)))
+
+(defn get-all-users-names
+  "for getting all users names"
+  []
+  (map :username (apply vector (get-user))))
+
+(defn get-specific-user
+  [UserName]
+  (get-from-sequ :username (get-user :UserName UserName)))
+
+(defn check-user-pass 
+  "helper function for checking passwords"
+  [dbUserMap UserMap]
+  (= (get-from-sequ :password dbUserMap) 
+     (str (passhash 3 (:PassWord UserMap) (get-from-sequ :lastupdate dbUserMap)))))
+
+(defn get-user-auth
+  "checks for existance password and returns auth"
+  [UserMap]
+  (let [dbuser (get-user :UserName (:UserName UserMap))]
+  (if (not(empty? dbuser))
+        (if (check-user-pass dbuser UserMap)
+          (get-from-sequ :auth dbuser)
+           {:status 202})
+           {:status 404})))
+
+
 (defn -main [ ]
 
-  (delete-user "mee")
-  (if  (insert-user {:UserName "mee" :PassWord "nopassword" })
-    (do (println "inserted"))
-    (do (println "not inserted")) )
-  (println (exists-user "mee"))
+  ; (delete-user "mee")
+  ; (if  (insert-user {:UserName "mee" :PassWord "nopassword" })
+  ;   (do (println "\ninserted\n"))
+  ;   (do (println "\nnot inserted\n")) )
+  (let [testUser {:UserName "mee" :PassWord "nopassword" }
+    	dbuser (get-user :UserName "mee")]
+    ; (println  (check-user-pass dbuser testUser))
+    (println (get-user-auth testUser)))
+   	(println (get-specific-user "mee"))
   
+  ; (println (exists-user "mee"))
+  ; (println (get-all-users-names))
+ 
   )
 
 
