@@ -19,5 +19,8 @@
   :profiles
   {:dev {:dependencies [[javax.servlet/servlet-api "2.5"]
                         [ring/ring-mock "0.3.0"]]}}
-    :main clojure-rest-api.usermodel/-main
+    ; :main clojure-rest-api.usermodel/-main
+  :aliases {"init" ["run" "-m" "clojure-rest-api.dbmanager/create-database"]
+            "burn" ["run" "-m" "clojure-rest-api.dbmanager/-burn"] }
+    
     )
