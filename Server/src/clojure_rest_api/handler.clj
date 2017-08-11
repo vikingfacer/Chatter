@@ -15,14 +15,16 @@
 
     (GET "/:UserName" [UserName] 
          
-         (response UserName))
+         (response (db-user/get-specific-user UserName)))
            
 ; (db-user/get-user :UserName UserName)
-
+    
     ; this must check for the existance before insertion
-    (POST "/" {body :body} 
-          (db-user/insert-user body )
-          (db-user/get-user :UserName (get body "UserName")))
+    (POST "/" {headers :headers} 
+          (if (not(db-user/exists-user (get headers "username")))
+          (db-user/insert-user {:UserName (get headers "username")
+                                :PassWord (get headers "password")} )
+          (db-user/get-user :UserName (get headers "username"))))
     
     (PUT  "/" {body :body header :headers}
          (let [user (get header "user")] 

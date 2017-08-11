@@ -18,7 +18,7 @@
   (jdbc/create-table-ddl
    :USERS
    [[:id :integer :primary :key :AUTO_INCREMENT]
-   [:UserName "varchar(40)" :unique]
+   [:UserName "varchar(40)" :unique "NOT NULL"]
    [:PassWord "varchar(40)"]
    [:Auth 	  "varchar(255)"]
    [:LastUpdate :bigint]
