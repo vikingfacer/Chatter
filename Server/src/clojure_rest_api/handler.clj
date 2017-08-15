@@ -22,9 +22,6 @@
          
          (response (db-user/get-specific-user UserName)))
            
-; (db-user/get-user :UserName UserName)
-    
-    ; this must check for the existance before insertion
     (POST "/" {body :body} 
           (if (not(db-user/exists-user (get body "username")))
           (do
@@ -40,14 +37,11 @@
           (if (db-user/exists-user (get body "username"))
             (let [ dbuser (first(db-user/get-user :username (get body "username")))]
               (if (Check-password? dbuser (get body "password"))
-                ; (= (:password dbuser) 
-                     ; (str (uts/passhash 3 (get body "password") (:lastupdate dbuser))))
                 (response 
                         {"username" (:username dbuser)
                          "auth" (:auth dbuser)} )
                 (str "User pass does not match"))) 
-            (str "User does not exist")
-            ))
+            (str "User does not exist") ))
     
     (PUT  "/" {body :body header :headers}
          (let [user (get header "user")] 
