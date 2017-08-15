@@ -5,8 +5,13 @@
             [ring.middleware.json :as middleware]
             [ring.util.response :refer [response]]
             
-            [clojure-rest-api.usermodel :as db-user]))
+            [clojure-rest-api.usermodel :as db-user]
+            [clojure-rest-api.db-utilities :as uts]))
 
+(defn Check-password?
+  [db-user requ-user]
+  (= (:password db-user) 
+     (str (uts/passhash 3 requ-user (:lastupdate db-user)))))
 
 (defroutes app-routes 
   (context "/User" [] (defroutes User-routes
@@ -20,11 +25,29 @@
 ; (db-user/get-user :UserName UserName)
     
     ; this must check for the existance before insertion
-    (POST "/" {headers :headers} 
-          (if (not(db-user/exists-user (get headers "username")))
-          (db-user/insert-user {:UserName (get headers "username")
-                                :PassWord (get headers "password")} )
-          (db-user/get-user :UserName (get headers "username"))))
+    (POST "/" {body :body} 
+          (if (not(db-user/exists-user (get body "username")))
+          (do
+            (db-user/insert-user {:UserName (get body "username")
+                                  :PassWord (get body "password")})
+            (response 
+              (select-keys 
+                (first(db-user/get-user :username (get body "username"))) 
+                [:username :auth])))
+          (str "User already exists") ))
+    
+    (POST "/Auth" {body :body}
+          (if (db-user/exists-user (get body "username"))
+            (let [ dbuser (first(db-user/get-user :username (get body "username")))]
+              (if (Check-password? dbuser (get body "password"))
+                ; (= (:password dbuser) 
+                     ; (str (uts/passhash 3 (get body "password") (:lastupdate dbuser))))
+                (response 
+                        {"username" (:username dbuser)
+                         "auth" (:auth dbuser)} )
+                (str "User pass does not match"))) 
+            (str "User does not exist")
+            ))
     
     (PUT  "/" {body :body header :headers}
          (let [user (get header "user")] 
