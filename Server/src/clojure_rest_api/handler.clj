@@ -35,25 +35,48 @@
     
     (POST "/Auth" {body :body}
           (if (db-user/exists-user (get body "username"))
-            (let [ dbuser (first(db-user/get-user :username (get body "username")))]
+            (let [ dbuser (first(db-user/get-user :username (get body "username")))]             
               (if (Check-password? dbuser (get body "password"))
                 (response 
                         {"username" (:username dbuser)
                          "auth" (:auth dbuser)} )
+                
                 (str "User pass does not match"))) 
+            
             (str "User does not exist") ))
+    ; this needs work
+    (PUT  "/" {body :body}
+          (if (db-user/exists-user (get body "username"))
+            (let [user (first (db-user/get-user :username (get body "username")))] 
+              
+              (if (Check-password? user (get body "password"))
+                (if (empty? (get body "newpassword"))
+                  (do 
+                    (db-user/update-user (get body "username") 
+                                         {:lastupdate (System/currentTimeMillis)}))
+                  (do 
+                    (db-user/update-user (get body "username")
+                                         {:lastupdate (System/currentTimeMillis)}
+                                          ; :password }))
+                                          ; password needs rehashed 
+                  (str "user pass does not match"))))
+              
+            (str "user does not exist")))
     
-    (PUT  "/" {body :body header :headers}
-         (let [user (get header "user")] 
-            (db-user/update-user user body)
-            (response  (db-user/get-user :UserName user))))
-    
-    (DELETE "/" {header :headers}
-            (db-user/delete-user (get header "username"))
-            (db-user/get-user ))))
+    (DELETE "/" {body :body}
+            
+            (if  (db-user/exists-user (get body "username"))
+              (let [ dbuser (first (db-user/get-user :username (get body "username")))]
+                
+                (if (Check-password? dbuser (get body "password"))
+                  (do
+                    (db-user/delete-user (get body "username"))
+                    (response "deleted"))
+                  (str "user pass does not match")))
+              (str "user does not exist"))))
                        
   (GET "/" [] "HELOO BABY BOY")
-  (route/not-found "Not Found try again"))
+  (route/not-found "Not Found try again")))
 
 (defn wrap-spy [handler]
   (fn [request]

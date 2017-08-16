@@ -69,8 +69,9 @@
 ; update of user
 (defn update-user
   "update user where something equals something"
+  ; udate-map is a key pair value 
   [UserName update-map]
-  (if (not (exists-user (:update-map)))
+  (if (not (exists-user (:username update-map)))
    (do
     (jdbc/update! db :USERS update-map ["UserName = ?" UserName]))
    false))
