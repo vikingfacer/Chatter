@@ -43,25 +43,23 @@
                 
                 (str "User pass does not match"))) 
             
-            (str "User does not exist") ))
+            (str "User does not exist")))
+    
     ; this needs work
     (PUT  "/" {body :body}
           (if (db-user/exists-user (get body "username"))
             (let [user (first (db-user/get-user :username (get body "username")))] 
-              
               (if (Check-password? user (get body "password"))
-                (if (empty? (get body "newpassword"))
-                  (do 
-                    (db-user/update-user (get body "username") 
-                                         {:lastupdate (System/currentTimeMillis)}))
                   (do 
                     (db-user/update-user (get body "username")
-                                         {:lastupdate (System/currentTimeMillis)}
-                                          ; :password }))
-                                          ; password needs rehashed 
-                  (str "user pass does not match"))))
-              
-            (str "user does not exist")))
+                                         (let [sys-time (System/currentTimeMillis)]
+                                         {:lastupdate sys-time 
+                                          :password (uts/passhash 3 (get body "newpassword") sys-time)}))
+                    (response{(keyword "changed") (select-keys
+                                (first(db-user/get-user :username (get body "username")))
+                                [:username])}))
+                  (str "user pass does not match")))              
+              (str "user does not exist")))
     
     (DELETE "/" {body :body}
             
@@ -73,10 +71,10 @@
                     (db-user/delete-user (get body "username"))
                     (response "deleted"))
                   (str "user pass does not match")))
-              (str "user does not exist"))))
+              (str "user does not exist")))))
                        
   (GET "/" [] "HELOO BABY BOY")
-  (route/not-found "Not Found try again")))
+  (route/not-found "Not Found try again"))
 
 (defn wrap-spy [handler]
   (fn [request]
