@@ -9,7 +9,7 @@
 
 
 (def db (Create-dbfrom-json "resources/configuration.json"))
-
+; A  last update needs to be made for the auth that is different the the password
 ; creation of user table
 (defn init-user-table
   "Create a table to store USERS"
@@ -23,6 +23,7 @@
    [:Auth 	  "varchar(255)"]
    [:LastUpdate :bigint]
    [:AuthBool :bool ]])))
+
 ; deletion of user table
 (defn drop-user-table 
   "Delete the user table"
