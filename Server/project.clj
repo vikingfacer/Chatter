@@ -18,7 +18,8 @@
                  :port 9998}}
   :profiles
   {:dev {:dependencies [[javax.servlet/servlet-api "2.5"]
-                        [ring/ring-mock "0.3.0"]]}}
+                        [ring/ring-mock "0.3.0"]]}
+        :uberjar {:aot :all}}
     ; :main clojure-rest-api.usermodel/-main
   :aliases {"init" ["run" "-m" "clojure-rest-api.dbmanager/create-database"]
             "burn" ["run" "-m" "clojure-rest-api.dbmanager/-burn"] }
