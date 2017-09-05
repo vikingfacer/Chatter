@@ -1,0 +1,2 @@
+web: java $JVM_OPTS -cp target/chatterbe.jar clojure.main -m clojure-rest-api.handlers
+1

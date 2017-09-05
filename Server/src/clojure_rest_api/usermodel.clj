@@ -14,15 +14,15 @@
 (defn init-user-table
   "Create a table to store USERS"
   []
-  (jdbc/db-do-commands db 
+  (jdbc/db-do-commands db) 
   (jdbc/create-table-ddl
    :USERS
-   [[:id :integer :primary :key :AUTO_INCREMENT]
+   [[:id :integer :primary :key :AUTO_INCREMENT]]
    [:UserName "varchar(40)" :unique "NOT NULL"]
    [:PassWord "varchar(40)"]
-   [:Auth 	  "varchar(255)"]
+   [:Auth     "varchar(255)"]
    [:LastUpdate :bigint]
-   [:AuthBool :bool ]])))
+   [:AuthBool :bool]))
 
 ; deletion of user table
 (defn drop-user-table 
@@ -116,22 +116,22 @@
            {:status 404})))
 
 
-(defn -main [ ]
+(defn -main []
 
   ; (delete-user "mee")
   ; (if  (insert-user {:UserName "mee" :PassWord "nopassword" })
   ;   (do (println "\ninserted\n"))
   ;   (do (println "\nnot inserted\n")) )
-  (let [testUser {:UserName "mee" :PassWord "nopassword" }
-    	dbuser (get-user :UserName "mee")]
+  (let [testUser {:UserName "mee" :PassWord "nopassword"}
+        dbuser (get-user :UserName "mee")]
     ; (println  (check-user-pass dbuser testUser))
     (println (get-user-auth testUser)))
-   	(println (get-specific-user "mee"))
+  (println (get-specific-user "mee")))
   
   ; (println (exists-user "mee"))
   ; (println (get-all-users-names))
  
-  )
+  
 
 
 

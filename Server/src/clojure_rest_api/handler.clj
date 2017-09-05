@@ -14,8 +14,9 @@
      (str (uts/passhash 3 requ-user (:lastupdate db-user)))))
 
 (defroutes app-routes 
-  (context "/User" [] (defroutes User-routes
-    (GET "/" [] 
+  (context "/User" [] 
+           
+    (GET "/" []
          (response (db-user/get-all-users-names))) ;this is
 
     (GET "/:UserName" [UserName] 
@@ -91,8 +92,13 @@
                     (db-user/delete-user (get body "username"))
                     (response "deleted"))
                   (str "user pass does not match")))
-              (str "user does not exist")))))
-  (context "/Convos"[])                 
+              (str "user does not exist"))))
+  
+    (context "/Convos"[]
+              
+        (POST "/" {body :body}
+              (response body)))
+                   
   (GET "/" [] "HELOO BABY BOY")
   (route/not-found "Not Found try again"))
 
